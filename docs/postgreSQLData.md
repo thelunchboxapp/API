@@ -1,0 +1,105 @@
+## Restaurants Table (restaurants)
+### Columns
+- **restaurantid**
+    - unique id
+    - **type**: serial
+    - primary key
+- **foreignresid**: 
+    - unique id that correlates to the restaurants mongoDB collection
+    - kept from the original mongoDB sample dataset for future potential portability
+    - **type**: varchar
+- **name**
+    - restaurant name
+    - **type**: varchar
+- **nameSearchVector** 
+    - text search vector for the name
+    - **type**: TSVECTOR
+    - used for full-text search on the name
+- **address**
+    - physical address of the restaurant
+    - **type**: varchar
+- **city**
+    - city where the restaurant is located
+    - **type**: varchar
+- **state**
+    - state where the restaurant is located
+    - **type**: varchar
+- **country**
+    - country where the restaurant is located
+    - **type**: varchar
+- **postalCode**
+    - postal code of the restaurant's location
+    - **type**: varchar
+- **coordinates**
+    - geographical coordinates of the restaurant
+    - **type**: geometry point
+- **stars**
+    - average rating of the restaurant
+    - **type**: double
+- **priceRange**
+    - price range of the restaurant, typically on a scale (e.g., 1-5)
+    - **type**: integer
+- **cuisine**
+    - type of cuisine the restaurant offers
+    - **type**: varchar
+- **closed**
+    - indicates if the restaurant is currently closed
+    - **type**: boolean
+
+## Reviews Table (reviews)
+### Columns
+- **reviewid**
+    - unique id for the review
+    - **type**: serial
+    - primary key
+- **username**
+    - name of the user who wrote the review
+    - **type**: varchar
+- **userid**
+    - unique id of the user who wrote the review
+    - **type**: integer
+    - foreign key referencing the `users` table
+- **restaurantid**
+    - unique id of the restaurant being reviewed
+    - **type**: integer
+    - foreign key referencing the `restaurants` table
+- **rating**
+    - rating given by the user, typically on a scale (e.g., 1-5)
+    - **type**: float
+- **date**
+    - date when the review was written
+    - **type**: Date
+- **comment**
+    - textual comment or feedback given by the user
+    - **type**: String
+- **price**
+    - price or cost experienced by the user at the restaurant
+    - **type**: integer
+
+
+## Users Table (users)
+### Columns
+- **userid**
+    - unique id for the user
+    - **type**: serial
+    - primary key
+- **username**
+    - unique name chosen by the user
+    - **type**: varchar
+    - unique constraint
+- **usernameSearchVector** 
+    - text search vector for the username
+    - **type**: TSVECTOR
+    - used for full-text search on the username
+- **password**
+    - hashed password for the user's account
+    - **type**: varchar
+    - Note: Always store hashed passwords, not plain text.
+- **email**
+    - email address of the user
+    - **type**: varchar
+    - unique constraint
+- **dateJoined**
+    - date when the user created their account
+    - **type**: Date
+    - default value set to the current date

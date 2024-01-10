@@ -1,20 +1,3 @@
-# LunchBox WebApp
-
-This is a backend api of a restaurant search and review app. 
-
-## Technologies
-* __Languages__: JavaScript with Node and Express
-* __Database__: PostgreSQL
-
-## How to use
-1. Clone the repository
-2. Set up a local postgreSQL database with the formats and fields as specified in [postgreSQLData.md](./docs/postgreSQLData.md)
-3. Navigate to src
-4. Run "npm install"
-5. Add your unique database url to the .env file. 
-6. Run "npm start"
-7. Test with postman or open up http://localhost:5000/api/v1/restaurants to get started!
-
 ### HTTP requests and URLs
 default - /api/v1/restaurants
 example urls are assuming a port of 5000
@@ -27,13 +10,19 @@ example urls are assuming a port of 5000
         - zipcode
             - example http://localhost:5000/api/v1/restaurants?zipcode=10101
         - cuisine
-            - example http://localhost:5000/api/v1/restaurants?cuisine=India
+            - example http://localhost:5000/api/v1/restaurants?cuisine=Indian
         - page
+            - currently starts from 0
             - http://localhost:5000/api/v1/restaurants?page=2
-    - with no parameters, it returns a homepage of the first 20 restaurants in the mongoDB database
+        - location
+            - http://localhost:5000/api/v1/restaurants?lat=40.6937056&lng=-73.99219&max_distance=1
+            - lat is latitude
+            - lng is longitude
+            - max_distance is maximum distance from given location in kilometers
+    - with no parameters, it returns a homepage of the first 20 restaurants in the `restaurants` table
         - example http://localhost:5000/api/v1/restaurants
     - with full parameters
-        - http://localhost:5000/api/v1/restaurants?name=cafe&zipcode=10012&cuisine=India&page=3
+        - http://localhost:5000/api/v1/restaurants?name=cafe&zipcode=10012&cuisine=Indian&page=3
     - calls RestaurantCtrl.apiGetRestaurants
 
 
@@ -41,7 +30,8 @@ example urls are assuming a port of 5000
     - type: GET
     - gets the reviews of a restaurant
     - calls RestaurantCtrl.apiGetRestaurantById
-    - example http://localhost:5000/api/v1/restaurants/id/5eb3d668b31de5d588f42a35
+    - example http://localhost:5000/api/v1/restaurants/id/5eb3d668b31de5d588f42a35 (should handle exceptions)
+    - example http://localhost:5000/api/v1/restaurants/id/100
 
 
 - **/cuisines**
@@ -57,10 +47,10 @@ example urls are assuming a port of 5000
         - body takes an object with the fields as shown in the example below
         - ```
             {
-             "restaurant_id": "5eb3d668b31de5d588f4292a",
-            "text": "Always love the food here",
-            "user_id": "6969",
-            "name": "Messi"
+             "restaurant_id": "100",
+            "comment": "Loved the food here",
+            "rating": "5",
+            "user_id": "firebaseuid1"
             }
             ```
         - adds a document to the reviews collection (which it creates if it doesn't exist) 
@@ -80,7 +70,7 @@ example urls are assuming a port of 5000
     - type: DELETE
         - deletes a review for a restaurant
         - url request takes id query for review id
-            - example: http://localhost:5000/api/v1/restaurants/review?id=652c5a548db04b6b4d38f97f
+            - example: http://localhost:5000/api/v1/restaurants/review?id=100
         - body takes an object with the fields as shown in the example below
         - ```
             {
@@ -88,3 +78,7 @@ example urls are assuming a port of 5000
             "name": "Messi" (optional)
             }
             ```
+    - type: GET
+    
+        TO BE ADDED
+
