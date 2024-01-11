@@ -22,6 +22,7 @@ const Restaurant = sequelize.define('restaurant', {
   stars: DataTypes.DOUBLE,
   pricerange: DataTypes.INTEGER,
   cuisine: DataTypes.STRING,
+  geoHash: DataTypes.STRING,
   // namesearchvector: {
   //   type: DataTypes.TSVECTOR,
   //   allowNull: true
