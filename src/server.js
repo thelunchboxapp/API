@@ -2,7 +2,7 @@ import express from "express"
 import cors from "cors"
 import restaurants from "./api/routes/restaurants.route.js"
 import social from "./api/routes/social.route.js"
-import wishlist from "./api/routes/wishlists.route.js"
+import wishlist from "./api/routes/lists.route.js"
 import reviews from "./api/routes/reviews.route.js"
 
 const app = express()

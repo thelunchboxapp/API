@@ -3,9 +3,9 @@ import { sequelize } from '../config/db.js';
 import Restaurant from './Restaurant.js';
 import User from './User.js';
 
-const Wishlist = sequelize.define('Wishlist', {
+const List = sequelize.define('List', {
 
-  wishid: {
+  listid: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
@@ -35,8 +35,7 @@ const Wishlist = sequelize.define('Wishlist', {
   priority: DataTypes.TEXT
 }, {
   timestamps: false,
-  tableName: 'wishlists'
+  tableName: 'lists'
 });
 
-
-export default Wishlist;
+export default List;
