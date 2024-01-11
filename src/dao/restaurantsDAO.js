@@ -2,6 +2,71 @@ import {sequelize, Op} from '../config/db.js';
 import Restaurant from '../models/Restaurant.js'; 
 
 export default class RestaurantsDAO {
+
+  static async addRestaurant(name, address, city, state, country, postalcode, stars, pricerange, cuisine, latitude, longitude, geoHash){
+    try {
+      const restaurantDoc = {
+        name: name,
+        address: address,
+        city: city,
+        state: state,
+        country: country,
+        postalcode: postalcode,
+        stars: stars,
+        pricerange: pricerange,
+        cuisine: cuisine,
+        latitude: latitude,
+        longitude: longitude,
+        geoHash: geoHash
+      };
+      return await Restaurant.create(restaurantDoc);
+
+    } catch (e) {
+      console.error(`Unable to post restaurant: ${e}`);
+      return { error: e };
+    }
+  }
+
+  static async updateRestaurant(restaurantId, name, address, city, state, country, postalcode, stars, pricerange, cuisine, latitude, longitude, geoHash){
+    try {
+      const updateResponse = await Restaurant.update(
+        { 
+        name: name,
+        address: address,
+        city: city,
+        state: state,
+        country: country,
+        postalcode: postalcode,
+        stars: stars,
+        pricerange: pricerange,
+        cuisine: cuisine,
+        latitude: latitude,
+        longitude: longitude,
+        geoHash: geoHash
+        },
+        { where: { restaurantid: restaurantId} }
+      );
+
+      return updateResponse;
+    } catch (e) {
+      console.error(`Unable to update restaurant: ${e}`);
+      return { error: e };
+    }
+  }
+
+  static async deleteRestaurant(restaurantId){
+    try{
+      const deleteResponse = await Restaurant.destroy({
+        where: { restaurantid: restaurantId }
+      });
+
+      return deleteResponse;
+
+    } catch (e) {
+        console.error(`Unable to update restaurant: ${e}`);
+        return { error: e };
+    }
+  }
   
   static async getRestaurants({
     filters = null,
@@ -96,8 +161,6 @@ export default class RestaurantsDAO {
       return { restaurantsList: [], totalNumRestaurants: 0 };
     }
   }
-  
-  
 
   static async getRestaurantByID(id) {
     try {
@@ -111,6 +174,15 @@ export default class RestaurantsDAO {
     }
   }
   
+  static async getRestaurantsByGeoHash(locationGeohash){
+    try {
+        const restaurants = await Restaurant.findAll({where: {geoHash: locationGeohash}})
+        return restaurants;
+      } catch (e) {
+        console.error(`Something went wrong in getRestaurantssByUserID: ${e}`);
+        throw e;
+      }
+  }
 
   static async getCuisines() {
     try {
