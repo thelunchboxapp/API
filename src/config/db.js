@@ -2,7 +2,6 @@ import {Sequelize, Op} from 'sequelize';
 import dotenv from 'dotenv';
 import fs from 'fs';
 
-
 dotenv.config();
 
 const pathToCert = "DigiCertGlobalRootCA.crt.pem";
@@ -30,5 +29,3 @@ const testDbConnection = async () => {
 };
 
 export { sequelize, testDbConnection, Op };
-
-
