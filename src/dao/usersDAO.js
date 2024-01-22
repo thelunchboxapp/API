@@ -53,4 +53,16 @@ export default class UsersDAO {
             return { error: e };
           }
     }
+
+    static async getUser(firebaseUid) {
+        try {
+            const user = await User.findOne({
+                where: { firebaseUid: firebaseUid }
+            });
+            return user;
+        } catch (e) {
+            console.error(`Unable to get user: ${e}`);
+            return { error: e };
+        }
+    }
 }

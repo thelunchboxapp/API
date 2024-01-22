@@ -4,6 +4,7 @@ import Review from './Review.js';
 import Restaurant from './Restaurant.js';
 import Follow from './Follow.js';
 import List from './List.js';
+import ListItem from './ListItem.js';
 
 // Set up associations
 
@@ -14,6 +15,8 @@ Review.belongsTo(User, { foreignKey: 'firebaseUid' });
 Restaurant.hasMany(Review, { foreignKey: 'restaurantid', as: 'reviews' });
 Review.belongsTo(Restaurant, { foreignKey: 'restaurantid' });
 List.belongsTo(User, {foreignKey: 'firebaseUid'});
+List.hasMany(ListItem, {foreignKey: 'listid', as: 'listitems'});
+ListItem.belongsTo(List, {foreignKey: 'listid'});
 
 // Export models and sequelize instance
-export { sequelize, Review, Restaurant, Follow, User, List };
+export { sequelize, Review, Restaurant, Follow, User, List, ListItem };

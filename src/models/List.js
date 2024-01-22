@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/db.js';
-import Restaurant from './Restaurant.js';
 import User from './User.js';
 
 const List = sequelize.define('List', {
@@ -13,26 +12,19 @@ const List = sequelize.define('List', {
 
   firebaseUid: {
     type: DataTypes.STRING,
-    // allowNull: false,
+    allowNull: false,
     references: {
       model: User, // Name of the Users model
       key: 'firebaseUid', // Key in Users to which it refers
     }
   },
-  restaurantid: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: Restaurant,
-      key: 'restaurantid',
-    }
+  description: {
+    type: DataTypes.TEXT,
   },
   date: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
-  },
-  cuisine: DataTypes.TEXT,
-  priority: DataTypes.TEXT
+  }
 }, {
   timestamps: false,
   tableName: 'lists'

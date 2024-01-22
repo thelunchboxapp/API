@@ -79,6 +79,5 @@ example urls are assuming a port of 5000
             }
             ```
     - type: GET
-    
         TO BE ADDED
 
