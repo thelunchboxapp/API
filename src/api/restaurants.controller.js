@@ -3,76 +3,76 @@ import Geohash from 'latlon-geohash';
 
 export default class RestaurantsController {
 
-  static async apiPostRestaurant(req, res, next) {
-    try {
-      const name = req.body.name;
-      const address = req.body.address;
-      const city = req.body.city;
-      const state = req.body.state;
-      const country = req.body.country;
-      const postalcode = req.body.postalcode;
-      const stars = req.body.stars;
-      const pricerange = req.body.pricerange;
-      const cuisine = req.body.cuisine;
-      const latitude = req.body.latitude;
-      const longitude = req.body.longitude;
-      const geoHash = Geohash.encode(Number(latitude), Number(longitude), 7);
-      console.log(geoHash);
+  // static async apiPostRestaurant(req, res, next) {
+  //   try {
+  //     const name = req.body.name;
+  //     const address = req.body.address;
+  //     const city = req.body.city;
+  //     const state = req.body.state;
+  //     const country = req.body.country;
+  //     const postalcode = req.body.postalcode;
+  //     const stars = req.body.stars;
+  //     const pricerange = req.body.pricerange;
+  //     const cuisine = req.body.cuisine;
+  //     const latitude = req.body.latitude;
+  //     const longitude = req.body.longitude;
+  //     const geoHash = Geohash.encode(Number(latitude), Number(longitude), 7);
+  //     console.log(geoHash);
 
-      const restaurantResponse = await RestaurantsDAO.addRestaurant(name, address, city, state, country, postalcode, stars, pricerange, cuisine, latitude, longitude, geoHash);
-      if (restaurantResponse && restaurantResponse.restaurantid) {
-        res.json({ status: "success" });
-      } else {
-          throw new Error("Error adding restaurant");
-      }
-    } catch (e) {
-      res.status(500).json({ error: e.message });
-    }
-  }
+  //     const restaurantResponse = await RestaurantsDAO.addRestaurant(name, address, city, state, country, postalcode, stars, pricerange, cuisine, latitude, longitude, geoHash);
+  //     if (restaurantResponse && restaurantResponse.restaurantid) {
+  //       res.json({ status: "success" });
+  //     } else {
+  //         throw new Error("Error adding restaurant");
+  //     }
+  //   } catch (e) {
+  //     res.status(500).json({ error: e.message });
+  //   }
+  // }
 
 
-  static async apiUpdateRestaurant(req, res, next) {
-    try {
-      const restaurantId = req.body.restaurant_id;
-      const name = req.body.name;
-      const address = req.body.address;
-      const city = req.body.city;
-      const state = req.body.state;
-      const country = req.body.country;
-      const postalcode = req.body.postalcode;
-      const stars = req.body.stars;
-      const pricerange = req.body.pricerange;
-      const cuisine = req.body.cuisine;
-      const latitude = req.body.latitude;
-      const longitude = req.body.longitude;
-      const geoHash = Geohash.encode(Number(latitude), Number(longitude), 7);
+  // static async apiUpdateRestaurant(req, res, next) {
+  //   try {
+  //     const restaurantId = req.body.restaurant_id;
+  //     const name = req.body.name;
+  //     const address = req.body.address;
+  //     const city = req.body.city;
+  //     const state = req.body.state;
+  //     const country = req.body.country;
+  //     const postalcode = req.body.postalcode;
+  //     const stars = req.body.stars;
+  //     const pricerange = req.body.pricerange;
+  //     const cuisine = req.body.cuisine;
+  //     const latitude = req.body.latitude;
+  //     const longitude = req.body.longitude;
+  //     const geoHash = Geohash.encode(Number(latitude), Number(longitude), 7);
 
-      const updatedRowCount = await RestaurantsDAO.updateRestaurant(restaurantId, name, address, city, state, country, postalcode, stars, pricerange, cuisine, latitude, longitude, geoHash);
+  //     const updatedRowCount = await RestaurantsDAO.updateRestaurant(restaurantId, name, address, city, state, country, postalcode, stars, pricerange, cuisine, latitude, longitude, geoHash);
 
-      if (updatedRowCount === 0) {
-        throw new Error("Unable to update restaurant - user may not be original poster");
-      }
+  //     if (updatedRowCount === 0) {
+  //       throw new Error("Unable to update restaurant - user may not be original poster");
+  //     }
 
-      res.json({ status: "success" });
-    } catch (e) {
-      res.status(500).json({ error: e.message });
-    }
-  }
+  //     res.json({ status: "success" });
+  //   } catch (e) {
+  //     res.status(500).json({ error: e.message });
+  //   }
+  // }
 
-  static async apiDeleteRestaurant(req, res, next) {
-    try {
-      const restaurantId = req.body.restaurant_id;
-      const deletedRowCount = await RestaurantsDAO.deleteRestaurant(restaurantId);
+  // static async apiDeleteRestaurant(req, res, next) {
+  //   try {
+  //     const restaurantId = req.body.restaurant_id;
+  //     const deletedRowCount = await RestaurantsDAO.deleteRestaurant(restaurantId);
 
-      if (deletedRowCount === 0) {
-        throw new Error("Unable to delete review or review not found");
-      }
+  //     if (deletedRowCount === 0) {
+  //       throw new Error("Unable to delete review or review not found");
+  //     }
 
-      res.json({ status: "success" });
-    } catch (e) {
-      res.status(500).json({ error: e.message });
-    }
-  }
+  //     res.json({ status: "success" });
+  //   } catch (e) {
+  //     res.status(500).json({ error: e.message });
+  //   }
+  // }
 
   static async apiGetRestaurants(req, res, next) {
     const restaurantsPerPage = req.query.restaurantsPerPage ? parseInt(req.query.restaurantsPerPage, 10) : 20;
@@ -148,15 +148,23 @@ export default class RestaurantsController {
       res.status(500).json({ error: e });
     }
   }
-  static async apiGetPostRestaurantByLocation(req, res, next) {
+
+  static async apiGetRestaurantsByGeoHash(req, res, next) {
     try {
       let latitude = req.body.latitude;
       let longitude = req.body.longitude;
+
+      if (!latitude || !longitude) {
+        res.status(400).json({ error: "Latitude and Longitude are required" });
+        return;
+      }
+
       const restaurantsPerPage = req.body.restaurantsPerPage ? parseInt(req.body.restaurantsPerPage, 10) : 20;
       const page = req.body.page ? parseInt(req.body.page, 10) : 0;
+
       const geoHash = Geohash.encode(Number(latitude), Number(longitude), 7);
+
       let depth = 0;
-  
       let closebyRestaurants = [];
       let geohashesToCheck = new Set([geoHash]);
       let processedGeohashes = new Set();
@@ -201,53 +209,4 @@ export default class RestaurantsController {
       res.status(500).json({ error: e });
     }
   }
-  
-  // without using set //checks the same one multiple times
-  // static async apiGetPostRestaurantByLocation(req, res, next) {
-  //   try {
-  //     let latitude = req.body.latitude;
-  //     let longitude = req.body.longitude;
-  //     const restaurantsPerPage = req.body.restaurantsPerPage ? parseInt(req.body.restaurantsPerPage, 10) : 20;
-  //     const page = req.body.page ? parseInt(req.body.page, 10) : 0;
-  //     const geoHash = Geohash.encode(Number(latitude), Number(longitude), 7);
-  //     let depth = 0;
-
-  //     let closebyRestaurants = [];
-  //     let geohashesToCheck = [geoHash];
-  
-  //     async function fetchRestaurants(geohashes) {
-  //       if (geohashes.length === 0 || closebyRestaurants.length > restaurantsPerPage * (page + 1) || depth == 20) {
-  //         return;
-  //       }
-  //       depth += 1;
-  
-  //       let nextGeohashes = [];
-  //       for (let gh of geohashes) {
-  //         let restaurants = await RestaurantsDAO.getRestaurantsByGeoHash(gh);
-  //         closebyRestaurants.push(...restaurants);
-  
-  //         // Get neighbors of this geohash
-  //         const neighboursObj = Geohash.neighbours(gh);
-  //         const neighboursArr = Object.keys(neighboursObj).map(n => neighboursObj[n]);
-  //         nextGeohashes.push(...neighboursArr);
-  //       }
-  
-  //       await fetchRestaurants(nextGeohashes);
-  //     }
-  
-  //     await fetchRestaurants(geohashesToCheck);
-  
-  //     // Pagination: Calculate the offset and limit the results
-  //     const startIndex = restaurantsPerPage * page;
-  //     const paginatedRestaurants = closebyRestaurants.slice(startIndex, startIndex + restaurantsPerPage);
-  
-  //     res.json(paginatedRestaurants);
-  //   } catch (e) {
-  //     console.log(`api, ${e}`);
-  //     res.status(500).json({ error: e });
-  //   }
-  // }
-  
-
-
 }

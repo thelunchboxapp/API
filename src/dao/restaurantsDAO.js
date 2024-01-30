@@ -3,70 +3,71 @@ import Restaurant from '../models/Restaurant.js';
 
 export default class RestaurantsDAO {
 
-  static async addRestaurant(name, address, city, state, country, postalcode, stars, pricerange, cuisine, latitude, longitude, geoHash){
-    try {
-      const restaurantDoc = {
-        name: name,
-        address: address,
-        city: city,
-        state: state,
-        country: country,
-        postalcode: postalcode,
-        stars: stars,
-        pricerange: pricerange,
-        cuisine: cuisine,
-        latitude: latitude,
-        longitude: longitude,
-        geoHash: geoHash
-      };
-      return await Restaurant.create(restaurantDoc);
+  // static async addRestaurant(name, address, city, state, country, postalcode, stars, pricerange, cuisine, latitude, longitude, geoHash){
+  //   try {
+  //     const restaurantDoc = {
+  //       name: name,
+  //       address: address,
+  //       city: city,
+  //       state: state,
+  //       country: country,
+  //       postalcode: postalcode,
+  //       stars: stars,
+  //       pricerange: pricerange,
+  //       cuisine: cuisine,
+  //       // latitude: latitude,
+  //       // longitude: longitude,
+  //       coordinate: DataTypes.GEOMETRY('POINT', latitude, longitude),
+  //       geoHash: geoHash
+  //     };
+  //     return await Restaurant.create(restaurantDoc);
 
-    } catch (e) {
-      console.error(`Unable to post restaurant: ${e}`);
-      return { error: e };
-    }
-  }
+  //   } catch (e) {
+  //     console.error(`Unable to post restaurant: ${e}`);
+  //     return { error: e };
+  //   }
+  // }
 
-  static async updateRestaurant(restaurantId, name, address, city, state, country, postalcode, stars, pricerange, cuisine, latitude, longitude, geoHash){
-    try {
-      const updateResponse = await Restaurant.update(
-        { 
-        name: name,
-        address: address,
-        city: city,
-        state: state,
-        country: country,
-        postalcode: postalcode,
-        stars: stars,
-        pricerange: pricerange,
-        cuisine: cuisine,
-        latitude: latitude,
-        longitude: longitude,
-        geoHash: geoHash
-        },
-        { where: { restaurantid: restaurantId} }
-      );
+  // static async updateRestaurant(restaurantId, name, address, city, state, country, postalcode, stars, pricerange, cuisine, latitude, longitude, geoHash){
+  //   try {
+  //     const updateResponse = await Restaurant.update(
+  //       { 
+  //       name: name,
+  //       address: address,
+  //       city: city,
+  //       state: state,
+  //       country: country,
+  //       postalcode: postalcode,
+  //       stars: stars,
+  //       pricerange: pricerange,
+  //       cuisine: cuisine,
+  //       latitude: latitude,
+  //       longitude: longitude,
+  //       geoHash: geoHash
+  //       },
+  //       { where: { restaurantid: restaurantId} }
+  //     );
 
-      return updateResponse;
-    } catch (e) {
-      console.error(`Unable to update restaurant: ${e}`);
-      return { error: e };
-    }
-  }
+  //     return updateResponse;
+  //   } catch (e) {
+  //     console.error(`Unable to update restaurant: ${e}`);
+  //     return { error: e };
+  //   }
+  // }
 
-  static async deleteRestaurant(restaurantId){
-    try{
-      const deleteResponse = await Restaurant.destroy({
-        where: { restaurantid: restaurantId }
-      });
+  // static async deleteRestaurant(restaurantId){
+  //   try{
+  //     const deleteResponse = await Restaurant.destroy({
+  //       where: { restaurantid: restaurantId }
+  //     });
 
-      return deleteResponse;
+  //     return deleteResponse;
 
-    } catch (e) {
-        console.error(`Unable to update restaurant: ${e}`);
-        return { error: e };
-    }
-  }
+  //   } catch (e) {
+  //       console.error(`Unable to update restaurant: ${e}`);
+  //       return { error: e };
+  //   }
+  // }
   
   static async getRestaurants({
     filters = null,
