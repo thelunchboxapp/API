@@ -177,7 +177,7 @@ export default class RestaurantsDAO {
   
   static async getRestaurantsByGeoHash(locationGeohash){
     try {
-        const restaurants = await Restaurant.findAll({where: {geoHash: locationGeohash}})
+        const restaurants = await Restaurant.findAll({where: {geohash: locationGeohash}})
         return restaurants;
       } catch (e) {
         console.error(`Something went wrong in getRestaurantssByUserID: ${e}`);

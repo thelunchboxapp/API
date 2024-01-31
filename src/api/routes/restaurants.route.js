@@ -7,7 +7,7 @@ const router = express.Router()
 router.route("/").get(RestaurantsCtrl.apiGetRestaurants)
 router.route("/id/:id").get(RestaurantsCtrl.apiGetRestaurantById)
 router.route("/cuisines").get(RestaurantsCtrl.apiGetRestaurantCuisines)
-router.route("geohash/tbd").get(RestaurantsCtrl.apiGetRestaurantsByGeoHash)
+router.route("/geohash/tbd").get(RestaurantsCtrl.apiGetRestaurantsByGeoHash)
 
 // router
 //   .route("/review")
