@@ -151,8 +151,8 @@ export default class RestaurantsController {
 
   static async apiGetRestaurantsByGeoHash(req, res, next) {
     try {
-      let latitude = req.body.latitude;
-      let longitude = req.body.longitude;
+      let latitude = req.query.latitude;
+      let longitude = req.query.longitude;
 
       if (!latitude || !longitude) {
         res.status(400).json({ error: "Latitude and Longitude are required" });

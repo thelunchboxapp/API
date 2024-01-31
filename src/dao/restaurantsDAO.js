@@ -196,5 +196,4 @@ export default class RestaurantsDAO {
       return [];
     }
   }
-  
 }
