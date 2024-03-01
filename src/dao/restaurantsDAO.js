@@ -1,5 +1,6 @@
 import {sequelize, Op} from '../config/db.js';
-import Restaurant from '../models/Restaurant.js'; 
+// import Restaurant from '../models/Restaurant.js';
+import {Restaurant} from '../models/index.js' 
 
 export default class RestaurantsDAO {
 
@@ -166,7 +167,7 @@ export default class RestaurantsDAO {
   static async getRestaurantByID(id) {
     try {
       const restaurant = await Restaurant.findByPk(id, {
-        include: 'reviews' // Assuming you've set up associations correctly
+        include: [{ association: 'reviews' }]
       });
       return restaurant;
     } catch (e) {
