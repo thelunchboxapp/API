@@ -12,5 +12,8 @@ router
 
 router.route("/:firebaseUid")
     .get(UsersCtrl.apiGetUser)
+    .post(UsersCtrl.apiPostUser)
+    .put(UsersCtrl.apiUpdateUser)
+    .delete(UsersCtrl.apiDeleteUser)
 
 export default router
