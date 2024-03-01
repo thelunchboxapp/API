@@ -83,4 +83,30 @@ export default class UsersController {
             res.status(500).json({ error: e.message });
         }
     }
+
+
+    static async apiCheckAvailability(req, res, next) {
+        try {
+            const { username, email } = req.query;
+            console.log(username, email);
+            let availability = {
+                username: null,
+                email: null,
+            };
+    
+            if (username) {
+                availability.username = await UsersDAO.isUsernameAvailable(username);
+            }
+    
+            if (email) {
+                availability.email = await UsersDAO.isEmailAvailable(email);
+            }
+    
+            res.json(availability);
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+            console.error(`Unable to check availability: ${e}`);
+        }
+    }
+    
 }

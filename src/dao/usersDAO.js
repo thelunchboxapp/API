@@ -65,4 +65,24 @@ export default class UsersDAO {
             return { error: e };
         }
     }
+
+    static async isUsernameAvailable(username) {
+        try {
+            const user = await User.findOne({ where: { username: username } });
+            return !user; // Returns true if the username is available (user is null)
+        } catch (e) {
+            console.error(`Unable to check username availability: ${e}`);
+            throw e;
+        }
+    }
+    
+    static async isEmailAvailable(email) {
+        try {
+            const user = await User.findOne({ where: { email: email } });
+            return !user; // Returns true if the email is available (user is null)
+        } catch (e) {
+            console.error(`Unable to check email availability: ${e}`);
+            throw e;
+        }
+    }    
 }
