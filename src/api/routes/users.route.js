@@ -7,11 +7,10 @@ router.get("/check-availability", UsersCtrl.apiCheckAvailability);
 
 router.route("/:firebaseUid")
     .get(UsersCtrl.apiGetUser)
-    .post(UsersCtrl.apiPostUser)
     .put(UsersCtrl.apiUpdateUser)
     .delete(UsersCtrl.apiDeleteUser)
 
-
-
+router.route("/")
+    .post(UsersCtrl.apiPostUser)
 
 export default router

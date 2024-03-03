@@ -10,8 +10,8 @@
 //       restaurantid,
 //       name,
 //       city,
-//       ST_X(coordinates::geometry) AS longitude,
-//       ST_Y(coordinates::geometry) AS latitude
+//       ST_X(coordinates::geometry) AS latitude,
+//       ST_Y(coordinates::geometry) AS longitude
 //     FROM
 //       restaurants`;
 
@@ -23,26 +23,24 @@
 // });
 
 // async function updateRestaurantsWithGeohash() {
-//   const restaurants = await getRestaurantsWithCoordinates();
-
-//   for (const restaurant of restaurants) {
-//     const geoHash = Geohash.encode(restaurant.longitude, restaurant.latitude, 7);
-
-//     // Update the restaurant's geohash in the database
-//     await sequelize.query(
-//       `UPDATE restaurants SET geoHash = :geoHash WHERE restaurantid = :restaurantId`, 
-//       { 
-//         replacements: { geoHash, restaurantId: restaurant.restaurantid },
-//         type: QueryTypes.UPDATE 
-//       }
-//     );
-
-//     // const decoded = Geohash.decode(geoHash);
-//     // console.log(`Restaurant ${restaurant.restaurantid} has geohash ${geoHash} which decodes to latitude ${decoded.lat} and longitude ${decoded.lon}`)
+//     const restaurants = await getRestaurantsWithCoordinates();
+  
+//     for (const restaurant of restaurants) {
+//       const geoHash = Geohash.encode(restaurant.latitude, restaurant.longitude, 5);
+//       console.log(`Updating restaurant ${restaurant.restaurantid} at coords ${restaurant.latitude} and ${restaurant.longitude}with geohash ${geoHash}`)
+  
+//       // Update the restaurant's geohash in the database
+//       await sequelize.query(
+//         `UPDATE restaurants SET geoHash = :geoHash WHERE restaurantid = :restaurantId`, 
+//         { 
+//           replacements: { geoHash, restaurantId: restaurant.restaurantid },
+//           type: QueryTypes.UPDATE 
+//         }
+//       );
+//     }
+  
+//     console.log('All restaurants updated with geohashes');
 //   }
-
-//   console.log('All restaurants updated with geohashes');
-// }
 
 // // updateRestaurantsWithGeohash().catch(console.error);
 // export { updateRestaurantsWithGeohash}

@@ -24,7 +24,7 @@ export default class UsersController {
     
     static async apiPostUser(req, res, next) {
         try{
-            const firebaseUid = req.params.firebaseUid;
+            const firebaseUid = req.body.firebaseUid;
             const username = req.body.username;
             const name = req.body.name;
             const email = req.body.email;

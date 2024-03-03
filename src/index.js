@@ -16,8 +16,7 @@ testDbConnection();
 const startServer = async () => {
 
   // ListItem.sync({ alter: true })
-  // List.sync({ alter: true })
-
+  // List.sync({ alter: true }
   
   try {
     await sequelize.sync();

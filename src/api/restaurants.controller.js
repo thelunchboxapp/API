@@ -159,10 +159,18 @@ export default class RestaurantsController {
         return;
       }
 
-      const restaurantsPerPage = req.body.restaurantsPerPage ? parseInt(req.body.restaurantsPerPage, 10) : 20;
-      const page = req.body.page ? parseInt(req.body.page, 10) : 0;
+      latitude = Number(latitude);
+      longitude = Number(longitude);
 
-      const geoHash = Geohash.encode(Number(latitude), Number(longitude), 7);
+      if (isNaN(latitude) || isNaN(longitude) || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+        res.status(400).json({ error: "Invalid latitude or longitude" });
+        return;
+      }
+
+      const restaurantsPerPage = req.query.restaurantsPerPage ? parseInt(req.query.restaurantsPerPage, 10) : 20;
+      const page = req.query.page ? parseInt(req.query.page, 10) : 0;
+
+      const geoHash = Geohash.encode(latitude, longitude, 5);
 
       let depth = 0;
       let closebyRestaurants = [];
@@ -170,7 +178,7 @@ export default class RestaurantsController {
       let processedGeohashes = new Set();
     
       async function fetchRestaurants() {
-        if (geohashesToCheck.size === 0 || closebyRestaurants.length > restaurantsPerPage * (page + 1) || depth == 20) {
+        if (geohashesToCheck.size === 0 || closebyRestaurants.length > restaurantsPerPage * (page + 1) || depth == 2) {
           return;
         }
         depth += 1;
@@ -203,7 +211,12 @@ export default class RestaurantsController {
       const startIndex = restaurantsPerPage * page;
       const paginatedRestaurants = closebyRestaurants.slice(startIndex, startIndex + restaurantsPerPage);
     
-      res.json(paginatedRestaurants);
+      res.json({
+        restaurants: paginatedRestaurants,
+        page: page,
+        totalPages: Math.ceil(closebyRestaurants.length / restaurantsPerPage),
+        totalRestaurants: closebyRestaurants.length,
+      });
     } catch (e) {
       console.log(`api, ${e}`);
       res.status(500).json({ error: e });
