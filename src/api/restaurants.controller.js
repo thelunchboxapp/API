@@ -207,12 +207,25 @@ export default class RestaurantsController {
     
       await fetchRestaurants();
     
-      // Pagination
       const startIndex = restaurantsPerPage * page;
       const paginatedRestaurants = closebyRestaurants.slice(startIndex, startIndex + restaurantsPerPage);
-    
+      
+      const modifiedRestaurants = paginatedRestaurants.map(restaurant => {
+
+        const latitude = restaurant.dataValues.coordinates.coordinates[1];
+        const longitude = restaurant.dataValues.coordinates.coordinates[0];
+      
+        return {
+          ...restaurant.dataValues, // Spread existing properties
+          coordinates: { // Create 'coord' object
+            latitude, // Set latitude
+            longitude, // Set longitude
+          },
+        };
+      });
+
       res.json({
-        restaurants: paginatedRestaurants,
+        restaurants: modifiedRestaurants,
         page: page,
         totalPages: Math.ceil(closebyRestaurants.length / restaurantsPerPage),
         totalRestaurants: closebyRestaurants.length,
