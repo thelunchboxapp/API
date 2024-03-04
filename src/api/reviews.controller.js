@@ -20,12 +20,25 @@ export default class ReviewsController {
   static async apiReviewsByRestuarantId(req, res, next) {
     try {
       let restaurantid = req.params.id || {};
-      let review = await ReviewsDAO.getReviewsByRestaurantId(restaurantid);
-      if (!review) {
+      const pageSize = req.query.pageSize ? parseInt(req.query.pageSize, 10) : 20;
+      const page = req.query.page ? parseInt(req.query.page, 10) : 0;
+      let reviews = await ReviewsDAO.getReviewsByRestaurantId(restaurantid, page, pageSize);
+
+      if (!reviews) {
         res.status(404).json({ error: "Not found" });
         return;
       }
-      res.json(review);
+
+      // Map reviews to include username
+      reviews = reviews.map(review => {
+        const { User, ...reviewWithoutUser } = review.dataValues; // Destructure to separate User and the rest of review properties
+        return {
+            ...reviewWithoutUser,
+            username: User ? User.username : null, // Add username directly to the review object
+        };
+    });
+
+      res.json(reviews);
     } catch(e) {
       console.log(`api, ${e}`);
       res.status(500).json({ error: e });

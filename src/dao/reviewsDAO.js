@@ -1,4 +1,4 @@
-import Review from '../models/Review.js';
+import {Review, User} from '../models/index.js';
 import { sequelize } from '../config/db.js';
 
 export default class ReviewsDAO {
@@ -13,10 +13,17 @@ export default class ReviewsDAO {
       }
 }
 
-static async getReviewsByRestaurantId(restaurantid){
+static async getReviewsByRestaurantId(restaurantid, page, pageSize){
   try {
-      const review = await Review.findAll({where: {restaurantid: restaurantid}})
+      const review = await Review.findAll({
+        where: {restaurantid: restaurantid}, 
+        include: [{ model: User, attributes: ['username'] }],
+        order: [['date', 'DESC']],
+        limit: pageSize,
+        offset: pageSize * (page)
+      })
       return review;
+
     } catch (e) {
       console.error(`Something went wrong in getReviewsByUserID: ${e}`);
       throw e;

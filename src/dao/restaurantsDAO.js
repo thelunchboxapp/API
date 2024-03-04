@@ -1,6 +1,6 @@
 import {sequelize, Op} from '../config/db.js';
 // import Restaurant from '../models/Restaurant.js';
-import {Restaurant} from '../models/index.js' 
+import {Restaurant, User} from '../models/index.js' 
 
 export default class RestaurantsDAO {
 
@@ -165,16 +165,15 @@ export default class RestaurantsDAO {
   }
 
   static async getRestaurantByID(id) {
-    try {
-      const restaurant = await Restaurant.findByPk(id, {
-        include: [{ association: 'reviews' }]
-      });
-      return restaurant;
-    } catch (e) {
-      console.error(`Something went wrong in getRestaurantByID: ${e}`);
-      throw e;
+      try {
+        const restaurant = await Restaurant.findByPk(id);
+        return restaurant;
+      } catch (e) {
+        console.error(`Something went wrong in getRestaurantByID: ${e}`);
+        throw e;
+      }
     }
-  }
+
   
   static async getRestaurantsByGeoHash(locationGeohash){
     try {

@@ -9,5 +9,4 @@ router.route("/id/:id").get(RestaurantsCtrl.apiGetRestaurantById)
 router.route("/cuisines").get(RestaurantsCtrl.apiGetRestaurantCuisines)
 router.route("/nearby").get(RestaurantsCtrl.apiGetRestaurantsByGeoHash)
 
-
 export default router 

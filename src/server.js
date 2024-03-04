@@ -11,7 +11,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.use("/api/v1/restaurants", restaurants)
+app.use("/api/v1/restaurant", restaurants)
 app.use("/api/v1/social", social)
 app.use("/api/v1/lists", list)
 app.use("/api/v1/reviews", reviews)
