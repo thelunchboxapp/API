@@ -17,5 +17,6 @@ router
 
 router.route("/user/:id").get(ReviewsCtrl.apiReviewsByUserId)
 router.route("/restaurant/:id").get(ReviewsCtrl.apiReviewsByRestuarantId)
+router.route("/latest").get(ReviewsCtrl.apiLatestReviews)
 
 export default router

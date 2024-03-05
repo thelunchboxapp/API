@@ -79,4 +79,38 @@ static async getReviewsByRestaurantId(restaurantid, page, pageSize){
       return { error: e };
     }
   }
+
+  static async getLatestReviewsByFriends(userId) {
+    try {
+      // Assuming 'Follow' model tracks who follows whom
+      // Fetching user IDs that the given user follows
+      const friends = await Follow.findAll({
+        where: { followerUid: userId },
+        attributes: ['followingUid']
+      });
+  
+      const friendsIds = friends.map(friend => friend.followingUid);
+  
+      // Now, find all reviews made by these friends
+      const reviews = await Review.findAll({
+        where: { firebaseUid: { [sequelize.Op.in]: friendsIds } },
+        include: [
+          { model: User, attributes: ['username', 'name'] },
+          { model: Restaurant, attributes: ['name', 'address', 'city', 'state'] }
+        ],
+        order: [['date', 'DESC']],
+        // Add a limit if necessary
+      });
+  
+      return reviews;
+    } catch (e) {
+      console.error(`Unable to get latest reviews by friends: ${e}`);
+      throw e;
+    }
+  }
+  
+
+  static async getLatestReviewsByLocation(latitude, longitude){
+    return null;
+  }
 }

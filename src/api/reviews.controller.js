@@ -102,4 +102,22 @@ export default class ReviewsController {
       res.status(500).json({ error: e.message });
     }
   }
+
+  static async apiLatestReviews(req, res, next) {
+    const userId = req.query.userId; 
+    const { latitude, longitude } = req.query; 
+
+    try {
+        const friendReviews = await ReviewsDAO.getLatestReviewsByFriends(userId);
+        const localReviews = await ReviewsDAO.getLatestReviewsByLocation(latitude, longitude);
+        
+        res.json({
+            friendReviews,
+            localReviews
+        });
+    } catch (e) {
+        console.error(`API error: ${e}`);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 }

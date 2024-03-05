@@ -3,7 +3,7 @@ import SocialDAO from '../dao/socialDAO.js';
 export default class SocialController {
     static async apiGetFollowers(req, res, next) {
         try {
-            const userUid = req.params.user_uid;
+            const userUid = req.params.firebaseUid;
             console.log(userUid)
             const followers = await SocialDAO.getFollowers({userUid});
             res.json(followers);
@@ -14,7 +14,7 @@ export default class SocialController {
 
     static async apiGetFollowing(req, res, next) {
         try {
-            const userUid = req.params.user_uid;
+            const userUid = req.params.firebaseUid;
             const following = await SocialDAO.getFollowing({userUid});
             res.json(following);
         } catch (e) {
@@ -24,7 +24,7 @@ export default class SocialController {
 
     static async apiGetConnections(req, res, next) {
         try {
-            const userUid = req.params.user_uid;
+            const userUid = req.params.firebaseUid;
             const connections = await SocialDAO.getConnections({userUid});
             res.json(connections);
         } catch (e) {
@@ -60,9 +60,8 @@ export default class SocialController {
 
     static async apiIsFollowing(req, res, next) {
         try {
-            const followerUid = req.body.follower_uid;
-            const followingUid = req.body.following_uid;
-            const isFollowing = await SocialDAO.isFollowing(followerUid, followingUid);
+            const { follower_uid, following_uid } = req.query;
+            const isFollowing = await SocialDAO.isFollowing(follower_uid, following_uid);
             res.json(isFollowing);
         } catch (e) {
             res.status(500).json({ error: e.message });
