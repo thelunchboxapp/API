@@ -94,19 +94,7 @@ export default class RestaurantsController {
         restaurantsPerPage
       });
 
-      const modifiedRestaurants = restaurantsList.map(restaurant => {
-
-        const latitude = restaurant.dataValues.coordinates.coordinates[1];
-        const longitude = restaurant.dataValues.coordinates.coordinates[0];
-      
-        return {
-          ...restaurant.dataValues, // Spread existing properties
-          coordinates: { // Create 'coord' object
-            latitude, // Set latitude
-            longitude, // Set longitude
-          },
-        };
-      });
+      const modifiedRestaurants = restaurantsList.map(restaurant => mapRestaurantCoordinates(restaurant));
 
       let response = {
         restaurants: modifiedRestaurants,
@@ -183,18 +171,8 @@ export default class RestaurantsController {
         return;
       }
 
-      const latitude = restaurant.dataValues.coordinates.coordinates[1];
-      const longitude = restaurant.dataValues.coordinates.coordinates[0];
-      
-      restaurant = {
-        ...restaurant.dataValues,
-        coordinates: {
-            latitude,
-            longitude,
-        },
-    };
-
-    res.json(restaurant);
+      return mapRestaurantCoordinates(restaurant);
+      res.json(restaurant);
     } catch (e) {
       console.log(`api, ${e}`);
       res.status(500).json({ error: e });
@@ -215,13 +193,14 @@ export default class RestaurantsController {
     try {
       let latitude = req.query.latitude;
       let longitude = req.query.longitude;
+      const restaurantsPerPage = req.query.restaurantsPerPage ? parseInt(req.query.restaurantsPerPage, 10) : 20;
+      const page = req.query.page ? parseInt(req.query.page, 10) : 0;
 
       if (!latitude || !longitude) {
         res.status(400).json({ error: "Latitude and Longitude are required" });
         return;
       }
-
-      latitude = Number(latitude);
+       latitude = Number(latitude);
       longitude = Number(longitude);
 
       if (isNaN(latitude) || isNaN(longitude) || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
@@ -229,62 +208,38 @@ export default class RestaurantsController {
         return;
       }
 
-      const restaurantsPerPage = req.query.restaurantsPerPage ? parseInt(req.query.restaurantsPerPage, 10) : 20;
-      const page = req.query.page ? parseInt(req.query.page, 10) : 0;
-
-      const geoHash = Geohash.encode(latitude, longitude, 5);
-
-      let depth = 0;
+      const baseGeoHash = Geohash.encode(latitude, longitude, 5);
       let closebyRestaurants = [];
-      let geohashesToCheck = new Set([geoHash]);
-      let processedGeohashes = new Set();
-    
-      async function fetchRestaurants() {
-        if (geohashesToCheck.size === 0 || closebyRestaurants.length > restaurantsPerPage * (page + 1) || depth == 2) {
+      let depth = 0;
+      
+      async function fetchRestaurants(geohashesToCheck) {
+        if (geohashesToCheck.size === 0 || closebyRestaurants.length >= restaurantsPerPage * (page + 1) || depth === 2) {
           return;
         }
+        
         depth += 1;
-  
+        let matchingRestaurants = await RestaurantsDAO.getRestaurantsByGeoHash(geohashesToCheck);
+        closebyRestaurants.push(...matchingRestaurants);
+
         let nextGeohashes = new Set();
-        for (let gh of geohashesToCheck) {
-          if (processedGeohashes.has(gh)) continue;
-  
-          let restaurants = await RestaurantsDAO.getRestaurantsByGeoHash(gh);
-          closebyRestaurants.push(...restaurants);
-          processedGeohashes.add(gh);
-  
-          // Get neighbors of this geohash
-          const neighboursObj = Geohash.neighbours(gh);
-          const neighboursArr = Object.keys(neighboursObj).map(n => neighboursObj[n]);
-          neighboursArr.forEach(n => {
-            if (!processedGeohashes.has(n)) {
+        geohashesToCheck.forEach(gh => {
+          const neighbours = Geohash.neighbours(gh);
+          Object.values(neighbours).forEach(n => {
+            if (!geohashesToCheck.has(n)) {
               nextGeohashes.add(n);
             }
           });
-        }
-  
-        geohashesToCheck = nextGeohashes;
-        await fetchRestaurants();
+        });
+        await fetchRestaurants(nextGeohashes);
       }
     
-      await fetchRestaurants();
+      // Start recursive fetching with the base geohash
+      await fetchRestaurants(new Set([baseGeoHash]));
     
       const startIndex = restaurantsPerPage * page;
       const paginatedRestaurants = closebyRestaurants.slice(startIndex, startIndex + restaurantsPerPage);
       
-      const modifiedRestaurants = paginatedRestaurants.map(restaurant => {
-
-        const latitude = restaurant.dataValues.coordinates.coordinates[1];
-        const longitude = restaurant.dataValues.coordinates.coordinates[0];
-      
-        return {
-          ...restaurant.dataValues, // Spread existing properties
-          coordinates: { // Create 'coord' object
-            latitude, // Set latitude
-            longitude, // Set longitude
-          },
-        };
-      });
+      const modifiedRestaurants = paginatedRestaurants.map(restaurant => mapRestaurantCoordinates(restaurant));
 
       res.json({
         restaurants: modifiedRestaurants,
@@ -297,4 +252,18 @@ export default class RestaurantsController {
       res.status(500).json({ error: e });
     }
   }
+  
+}
+
+function mapRestaurantCoordinates(restaurant) {
+  const latitude = restaurant.dataValues.coordinates.coordinates[1];
+  const longitude = restaurant.dataValues.coordinates.coordinates[0];
+
+  return {
+    ...restaurant.dataValues, // Spread existing properties
+    coordinates: { // Create 'coord' object
+      latitude, // Set latitude
+      longitude, // Set longitude
+    },
+  };
 }

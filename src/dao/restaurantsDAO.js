@@ -209,10 +209,12 @@ export default class RestaurantsDAO {
     }
 
   
-  static async getRestaurantsByGeoHash(locationGeohash){
+  static async getRestaurantsByGeoHash(geohashesToCheck){
     try {
-        const restaurants = await Restaurant.findAll({where: {geohash: locationGeohash}})
-        return restaurants;
+      const matchingRestaurants = await Restaurant.findAll({
+        where: { geohash: { [Op.in]: Array.from(geohashesToCheck) } },
+      });
+      return matchingRestaurants;
       } catch (e) {
         console.error(`Something went wrong in getRestaurantssByUserID: ${e}`);
         throw e;

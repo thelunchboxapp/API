@@ -1,5 +1,6 @@
 import ReviewsDAO from "../dao/reviewsDAO.js";
 
+
 export default class ReviewsController {
 
   static async apiReviewsByUserId(req, res, next) {
@@ -104,8 +105,16 @@ export default class ReviewsController {
   }
 
   static async apiLatestReviews(req, res, next) {
-    const userId = req.query.userId; 
+    console.log('apiLatestReviews');
+    const userId = req.query.firebaseUid; 
     const { latitude, longitude } = req.query; 
+
+    console.log('userId', userId);
+    console.log('latitude', latitude);
+    console.log('longitude', longitude);
+    if (!userId || !latitude || !longitude) {
+        return res.status(400).json({ error: 'Missing required query parameters' });
+    }
 
     try {
         const friendReviews = await ReviewsDAO.getLatestReviewsByFriends(userId);

@@ -14,7 +14,7 @@ app.use(express.json())
 app.use("/api/v1/restaurant", restaurants)
 app.use("/api/v1/social", social)
 app.use("/api/v1/lists", list)
-app.use("/api/v1/reviews", reviews)
+app.use("/api/v1/review", reviews)
 app.use("/api/v1/users", users)
 app.use("*", (req, res) => res.status(404).json({ error: "not found"}))
 

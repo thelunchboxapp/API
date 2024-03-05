@@ -1,5 +1,5 @@
-import {Review, User} from '../models/index.js';
-import { sequelize } from '../config/db.js';
+import {Review, User, Follow, Restaurant} from '../models/index.js';
+import { sequelize, Op } from '../config/db.js';
 
 export default class ReviewsDAO {
 
@@ -93,7 +93,7 @@ static async getReviewsByRestaurantId(restaurantid, page, pageSize){
   
       // Now, find all reviews made by these friends
       const reviews = await Review.findAll({
-        where: { firebaseUid: { [sequelize.Op.in]: friendsIds } },
+        where: { firebaseUid: { [Op.in]: friendsIds } },
         include: [
           { model: User, attributes: ['username', 'name'] },
           { model: Restaurant, attributes: ['name', 'address', 'city', 'state'] }
