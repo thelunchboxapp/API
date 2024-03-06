@@ -35,7 +35,7 @@ export default class ReviewsController {
         const { User, ...reviewWithoutUser } = review.dataValues; // Destructure to separate User and the rest of review properties
         return {
             ...reviewWithoutUser,
-            username: User ? User.username : null, // Add username directly to the review object
+            username: User ? User.username : null,
         };
     });
 

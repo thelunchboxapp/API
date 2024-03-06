@@ -13,7 +13,7 @@ const Follow = sequelize.define('Follow', {
         allowNull: false,
         references: {
         model: User,
-        key: 'firebaseUid',
+        key: 'firebaseUid'
         }
     },
     followingUid: {
@@ -21,7 +21,7 @@ const Follow = sequelize.define('Follow', {
         allowNull: false,
         references: {
         model: User,
-        key: 'firebaseUid',
+        key: 'firebaseUid'
         }
     }
     }, {

@@ -1,17 +1,23 @@
 import {sequelize, Op} from '../config/db.js';
-import Follow from '../models/Follow.js';
+import {Follow, User }from '../models/index.js';
 
 export default class SocialDAO {
+
 
     static async getFollowers({
         userUid = null,
     } = {}) {
         try {
             const followers = await Follow.findAll({
-                where: {followingUid: userUid},
+                where: { followingUid: userUid },
+                include: [{
+                    model: User,
+                    attributes: ['firebaseUid', 'username', 'name'],
+                }],
                 order: [['createdAt', 'DESC']]
             });
-            return followers;
+            // Map to extract user details
+            return followers.map(follower => follower.User);
         } catch (e) {
             console.error(`Unable to get followers: ${e}`);
             throw e;
@@ -23,10 +29,15 @@ export default class SocialDAO {
     } = {}) {
         try {
             const following = await Follow.findAll({
-                where: {followerUid: userUid},
+                where: { followerUid: userUid },
+                include: [{
+                    model: User,
+                    attributes: ['firebaseUid', 'username', 'name', 'email']
+                }],
                 order: [['createdAt', 'DESC']]
             });
-            return following;
+            // Map to extract user details
+            return following.map(f => f.User);
         } catch (e) {
             console.error(`Unable to get following: ${e}`);
             throw e;
@@ -38,24 +49,23 @@ export default class SocialDAO {
     } = {}) {
         try {
             const connections = await sequelize.query(`
-                SELECT f1.*
+                SELECT u."firebaseUid", u.username, u.name
                 FROM follows AS f1
                 INNER JOIN follows AS f2 ON f1."followerUid" = f2."followingUid" AND f1."followingUid" = f2."followerUid"
+                INNER JOIN users AS u ON u."firebaseUid" = f1."followingUid"
                 WHERE f1."followerUid" = :userUid
                 ORDER BY f1."createdAt" DESC
             `, {
                 replacements: { userUid },
-                type: sequelize.QueryTypes.SELECT,
-                model: Follow, // Assuming 'Follow' is your Sequelize model
-                mapToModel: true // Maps the results to the model properties
+                type: sequelize.QueryTypes.SELECT
             });
-
             return connections;
         } catch (e) {
             console.error(`Unable to get connections: ${e}`);
             throw e;
         }
     }
+    
 
 
     static async addFollow(followerUid, followingUid) {
