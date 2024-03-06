@@ -1,5 +1,5 @@
-import User from '../models/User.js';
-import { sequelize } from '../config/db.js';
+import{ User, Follow }from '../models/index.js';
+import { sequelize, Op } from '../config/db.js';
 
 export default class UsersDAO {
     static async addUser(firebaseUid, username, name, email, createdAt) {
@@ -18,6 +18,52 @@ export default class UsersDAO {
             return { error: e };
         }
     }
+
+    static async searchUsers(searchingUserUid, searchName) {
+        try {
+            const users = await User.findAll({
+                where: {
+                    [Op.and]: [
+                        {
+                            [Op.or]: [
+                                {
+                                    name: {
+                                        [Op.iLike]: `%${searchName}%`
+                                    }
+                                },
+                                {
+                                    username: {
+                                        [Op.iLike]: `%${searchName}%`
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            firebaseUid: {
+                                [Op.ne]: searchingUserUid // Exclude the user's own data
+                            }
+                        }
+                    ]
+                },
+                attributes: {
+                    include: [
+                        [sequelize.literal(`EXISTS(SELECT 1 FROM follows WHERE follows."followingUid" = "User"."firebaseUid" AND follows."followerUid" = '${searchingUserUid}')`), 'isFollowing']
+                    ]
+                }
+            });
+    
+            return users.map(user => {
+                const userJson = user.toJSON();
+                // Transform isFollowing from a Sequelize literal/existence check to a boolean
+                userJson.isFollowing = !!userJson.isFollowing; 
+                return userJson;
+            });
+        } catch (e) {
+            console.error(`Unable to search users: ${e}`);
+            throw e;
+        }
+    }
+    
 
     static async updateUser(firebaseUid, username, name, email) {
         try{

@@ -12,12 +12,13 @@ export default class SocialDAO {
                 where: { followingUid: userUid },
                 include: [{
                     model: User,
+                    as: "Follower",
                     attributes: ['firebaseUid', 'username', 'name'],
                 }],
                 order: [['createdAt', 'DESC']]
             });
             // Map to extract user details
-            return followers.map(follower => follower.User);
+            return followers.map(follower => follower.Follower);
         } catch (e) {
             console.error(`Unable to get followers: ${e}`);
             throw e;
@@ -32,12 +33,13 @@ export default class SocialDAO {
                 where: { followerUid: userUid },
                 include: [{
                     model: User,
+                    as: "Following",
                     attributes: ['firebaseUid', 'username', 'name', 'email']
                 }],
                 order: [['createdAt', 'DESC']]
             });
             // Map to extract user details
-            return following.map(f => f.User);
+            return following.map(f => f.Following);
         } catch (e) {
             console.error(`Unable to get following: ${e}`);
             throw e;

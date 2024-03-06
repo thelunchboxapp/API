@@ -8,9 +8,10 @@ import ListItem from './ListItem.js';
 
 // Set up associations
 
-User.hasMany(Follow, { foreignKey: 'followerUid' });
-Follow.belongsTo(User, { foreignKey: 'followerUid' });
-Follow.belongsTo(User, { foreignKey: 'followingUid' });
+User.hasMany(Follow, { foreignKey: 'followerUid', as: 'Following' }); 
+User.hasMany(Follow, { foreignKey: 'followingUid', as: 'Follower' });
+Follow.belongsTo(User, { foreignKey: 'followerUid', as: 'Follower' }); 
+Follow.belongsTo(User, { foreignKey: 'followingUid', as: 'Following' });
 User.hasMany(Review, { foreignKey: 'firebaseUid' });
 User.hasMany(List, {foreignKey: 'firebaseUid' });
 Review.belongsTo(User, { foreignKey: 'firebaseUid' });

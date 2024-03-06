@@ -2,6 +2,25 @@ import UsersDAO from "../dao/usersDAO.js";
 
 export default class UsersController {
 
+    static async apiSearchUsers(req, res, next) {
+        try {
+            const searchingUserUid = req.params.firebaseUid; // The UID of the user performing the search
+            const searchName = req.query.name; // Name parameter to search for
+    
+            if (!searchingUserUid || !searchName) {
+                res.status(400).json({ error: "Both firebaseUid and search name are required" });
+                return;
+            }
+    
+            const users = await UsersDAO.searchUsers(searchingUserUid, searchName);
+    
+            res.json(users);
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+        }
+    }
+    
+
     static async apiGetUser(req, res, next) {
         try {
             const firebaseUid = req.params.firebaseUid; // Changed from req.body to req.params
