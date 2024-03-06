@@ -39,7 +39,7 @@ export default class SocialController {
             if (followerUid === followingUid) {
                 throw new Error("You cannot follow yourself");
             }
-            console.log(followerUid, followingUid);
+            
             const follow = await SocialDAO.addFollow(followerUid, followingUid);
             res.json(follow);
         } catch (e) {
@@ -49,8 +49,9 @@ export default class SocialController {
 
     static async apiUnfollowUser(req, res, next) {
         try {
-            const followerUid = req.body.follower_uid;
-            const followingUid = req.body.following_uid;
+            const followerUid = req.params.follower_uid;
+            const followingUid = req.params.following_uid;
+            console.log(followerUid, followingUid);
             const unfollow = await SocialDAO.deleteFollow(followerUid, followingUid);
             res.json(unfollow);
         } catch (e) {

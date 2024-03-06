@@ -9,7 +9,7 @@ router.route("/following/:firebaseUid").get(SocialCtrl.apiGetFollowing);
 router.route("/connections/:firebaseUid").get(SocialCtrl.apiGetConnections);
 
 router.route("/follow").post(SocialCtrl.apiFollowUser);
-router.route("/follow").delete(SocialCtrl.apiUnfollowUser);
+router.route("/follow/:follower_uid/:following_uid").delete(SocialCtrl.apiUnfollowUser);
 router.route("/isfollowing").get(SocialCtrl.apiIsFollowing);
 
 export default router;
