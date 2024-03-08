@@ -3,9 +3,18 @@ import { sequelize, Op } from '../config/db.js';
 
 export default class ReviewsDAO {
 
-  static async getReviewsByUserId(userid){
+  static async getReviewsByUserId(userid, page, pageSize){
     try {
-        const review = await Review.findAll({where: {firebaseUid: userid}})
+        const review = await Review.findAll({
+          where:  {firebaseUid: userid}, 
+          include: [{ 
+            model: Restaurant,
+            attributes: { exclude: ['coordinates'] }
+          }],
+          order: [['date', 'DESC']],
+          limit: pageSize,
+          offset: pageSize * (page)
+        })
         return review;
       } catch (e) {
         console.error(`Something went wrong in getReviewsByUserID: ${e}`);

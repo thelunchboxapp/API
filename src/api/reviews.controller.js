@@ -6,7 +6,10 @@ export default class ReviewsController {
   static async apiReviewsByUserId(req, res, next) {
     try {
       let userid = req.params.id || {};
-      let review = await ReviewsDAO.getReviewsByUserId(userid);
+      const pageSize = req.query.pageSize ? parseInt(req.query.pageSize, 10) : 20;
+      const page = req.query.page ? parseInt(req.query.page, 10) : 0;
+
+      let review = await ReviewsDAO.getReviewsByUserId(userid, page, pageSize);
       if (!review) {
         res.status(404).json({ error: "Not found" });
         return;
@@ -23,6 +26,7 @@ export default class ReviewsController {
       let restaurantid = req.params.id || {};
       const pageSize = req.query.pageSize ? parseInt(req.query.pageSize, 10) : 20;
       const page = req.query.page ? parseInt(req.query.page, 10) : 0;
+
       let reviews = await ReviewsDAO.getReviewsByRestaurantId(restaurantid, page, pageSize);
 
       if (!reviews) {
