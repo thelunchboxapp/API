@@ -113,20 +113,22 @@ export default class ReviewsController {
     const userId = req.query.firebaseUid; 
     const { latitude, longitude } = req.query; 
 
-    console.log('userId', userId);
-    console.log('latitude', latitude);
-    console.log('longitude', longitude);
-    if (!userId || !latitude || !longitude) {
+    const pageSize = req.query.pageSize ? parseInt(req.query.pageSize, 10) : 20;
+    const page = req.query.page ? parseInt(req.query.page, 10) : 0;
+
+    // if (!userId || !latitude || !longitude) {
+    if (!userId) {
         return res.status(400).json({ error: 'Missing required query parameters' });
     }
 
     try {
         const friendReviews = await ReviewsDAO.getLatestReviewsByFriends(userId);
-        const localReviews = await ReviewsDAO.getLatestReviewsByLocation(latitude, longitude);
-        
+        // const localReviews = await ReviewsDAO.getLatestReviewsByLocation(latitude, longitude);
+        const generalReviews = await ReviewsDAO.getLatestReviewsGeneral(page, pageSize);
         res.json({
             friendReviews,
-            localReviews
+            // localReviews
+            generalReviews
         });
     } catch (e) {
         console.error(`API error: ${e}`);

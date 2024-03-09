@@ -122,4 +122,23 @@ static async getReviewsByRestaurantId(restaurantid, page, pageSize){
   static async getLatestReviewsByLocation(latitude, longitude){
     return null;
   }
+
+  static async getLatestReviewsGeneral(page, pageSize){
+    try {
+      const reviews = await Review.findAll({
+        include: [
+          { model: User, attributes: ['username', 'name'] },
+          { model: Restaurant, attributes: ['name', 'address', 'city', 'state'] }
+        ],
+        order: [['date', 'DESC']],
+        limit: pageSize,
+        offset: pageSize * (page)
+      });
+
+      return reviews;
+    } catch (e) {
+      console.error(`Unable to get latest general reviews: ${e}`);
+      throw e;
+    }
+  }
 }
