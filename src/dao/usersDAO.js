@@ -100,11 +100,48 @@ export default class UsersDAO {
           }
     }
 
+    // static async getUser(firebaseUid) {
+    //     try {
+    //         const user = await User.findOne({
+    //             where: { firebaseUid: firebaseUid }
+    //         });
+    //         return user;
+    //     } catch (e) {
+    //         console.error(`Unable to get user: ${e}`);
+    //         return { error: e };
+    //     }
+    // }
     static async getUser(firebaseUid) {
         try {
             const user = await User.findOne({
-                where: { firebaseUid: firebaseUid }
+                where: { firebaseUid: firebaseUid },
+                attributes: {
+                    include: [
+                        // Include follower count
+                        [sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM "follows" AS "followers"
+                            WHERE
+                                "followers"."followingUid" = "User"."firebaseUid"
+                        )`), 'followersCount'],
+    
+                        // Include following count
+                        [sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM "follows" AS "following"
+                            WHERE
+                                "following"."followerUid" = "User"."firebaseUid"
+                        )`), 'followingCount']
+                    ]
+                }
             });
+    
+            // if (user) {
+            //     const result = user.toJSON();
+            //     result.followersCount = parseInt(result.followersCount, 10);
+            //     result.followingCount = parseInt(result.followingCount, 10);
+            //     return result;
+            // }
             return user;
         } catch (e) {
             console.error(`Unable to get user: ${e}`);
