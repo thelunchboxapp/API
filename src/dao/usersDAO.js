@@ -136,12 +136,6 @@ export default class UsersDAO {
                 }
             });
     
-            // if (user) {
-            //     const result = user.toJSON();
-            //     result.followersCount = parseInt(result.followersCount, 10);
-            //     result.followingCount = parseInt(result.followingCount, 10);
-            //     return result;
-            // }
             return user;
         } catch (e) {
             console.error(`Unable to get user: ${e}`);
