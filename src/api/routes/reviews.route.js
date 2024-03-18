@@ -9,7 +9,8 @@ router
   // .get(ReviewsCtrl.apiGetReviews)
   .post(ReviewsCtrl.apiPostReview)
   .put(ReviewsCtrl.apiUpdateReview)
-  .delete(ReviewsCtrl.apiDeleteReview)
+  
+router.route("/:id").delete(ReviewsCtrl.apiDeleteReview)
   
   // .post(authenticateUser, ReviewsCtrl.apiPostReview)
   // .put(authenticateUser, ReviewsCtrl.apiUpdateReview)

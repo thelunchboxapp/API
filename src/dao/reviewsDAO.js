@@ -57,7 +57,7 @@ static async getReviewsByRestaurantId(restaurantid, page, pageSize){
     }
   }
 
-  static async updateReview(reviewId, userId, comment, price, rating, date) {
+  static async updateReview(reviewId, comment, price, rating, date) {
     try {
       const updateResponse = await Review.update(
         { 
@@ -66,7 +66,7 @@ static async getReviewsByRestaurantId(restaurantid, page, pageSize){
           rating: rating,
           date: date,
         },
-        { where: { reviewid: reviewId, firebaseUid: userId } }
+        { where: { reviewid: reviewId } }
       );
 
       return updateResponse;
@@ -76,10 +76,10 @@ static async getReviewsByRestaurantId(restaurantid, page, pageSize){
     }
   }
 
-  static async deleteReview(reviewId, userId) {
+  static async deleteReview(reviewId) {
     try {
       const deleteResponse = await Review.destroy({
-        where: { reviewid: reviewId, firebaseUid: userId }
+        where: { reviewid: reviewId}
       });
 
       return deleteResponse;

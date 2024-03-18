@@ -73,16 +73,15 @@ export default class ReviewsController {
   static async apiUpdateReview(req, res, next) {
     try {
       const reviewId = req.body.review_id;
-      const userId = req.body.user_id;
       const comment = req.body.comment;
       const price = req.body.price;
       const rating = req.body.rating;
       const date = new Date();
 
-      const updatedRowCount = await ReviewsDAO.updateReview(reviewId, userId, comment, price, rating, date);
+      const updatedRowCount = await ReviewsDAO.updateReview(reviewId, comment, price, rating, date);
 
       if (updatedRowCount === 0) {
-        throw new Error("Unable to update review - user may not be original poster");
+        throw new Error("Unable to update review ");
       }
 
       res.json({ status: "success" });
@@ -93,10 +92,9 @@ export default class ReviewsController {
 
   static async apiDeleteReview(req, res, next) {
     try {
-      const reviewId = req.body.review_id;
-      const userId = req.body.user_id;
+      const reviewId = req.params.id;
 
-      const deletedRowCount = await ReviewsDAO.deleteReview(reviewId, userId);
+      const deletedRowCount = await ReviewsDAO.deleteReview(reviewId);
 
       if (deletedRowCount === 0) {
         throw new Error("Unable to delete review or review not found");
