@@ -65,13 +65,14 @@ export default class UsersDAO {
     }
     
 
-    static async updateUser(firebaseUid, username, name, email) {
+    static async updateUser(firebaseUid, username, name, email, profileImageUrl) {
         try{
             const updateResponse = await User.update(
                 {
                     username: username,
                     name: name,
-                    email: email
+                    email: email,
+                    profileImageUrl: profileImageUrl
                 },
                 {where: { firebaseUid: firebaseUid }}
             );

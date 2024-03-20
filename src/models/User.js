@@ -23,6 +23,11 @@ const User = sequelize.define('User', {
       unique: true,
       allowNull: false
     },
+    profileImageUrl: {
+      type: DataTypes.STRING,
+      unique: false,
+      allowNull: true
+    }
   },
   {
     createdAt: true,

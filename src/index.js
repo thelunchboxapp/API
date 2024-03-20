@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { sequelize, testDbConnection } from './config/db.js';
 import app from './server.js';
+import User from './models/User.js';
 // import {Review, Restaurant} from './models/index.js';
 // import {ListItem, List} from './models/index.js';
 
@@ -17,6 +18,7 @@ const startServer = async () => {
 
   // ListItem.sync({ alter: true })
   // List.sync({ alter: true }
+  User.sync({ alter: true });
   
   try {
     await sequelize.sync();

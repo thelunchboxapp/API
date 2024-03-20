@@ -72,8 +72,9 @@ export default class UsersController {
             const username = req.body.username;
             const name = req.body.name;
             const email = req.body.email;
+            const profileImageUrl = req.body.profileImageUrl;
             
-            const updatedRowCount = await UsersDAO.updateUser(firebaseUid, username, name, email);
+            const updatedRowCount = await UsersDAO.updateUser(firebaseUid, username, name, email, profileImageUrl);
 
             if (updatedRowCount === 0) {
                 throw new Error("Unable to update user - user may not be original user");
