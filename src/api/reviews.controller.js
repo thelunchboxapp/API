@@ -122,7 +122,7 @@ export default class ReviewsController {
     try {
         const friendReviews = await ReviewsDAO.getLatestReviewsByFriends(userId);
         // const localReviews = await ReviewsDAO.getLatestReviewsByLocation(latitude, longitude);
-        const generalReviews = await ReviewsDAO.getLatestReviewsGeneral(page, pageSize);
+        const generalReviews = await ReviewsDAO.getLatestReviewsGeneral(userId, page, pageSize);
         res.json({
             friendReviews,
             // localReviews

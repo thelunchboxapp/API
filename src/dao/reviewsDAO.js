@@ -123,22 +123,56 @@ static async getReviewsByRestaurantId(restaurantid, page, pageSize){
     return null;
   }
 
-  static async getLatestReviewsGeneral(page, pageSize){
+  // static async getLatestReviewsGeneral(page, pageSize){
+  //   try {
+  //     const reviews = await Review.findAll({
+  //       include: [
+  //         { model: User, attributes: ['username', 'name'] },
+  //         { model: Restaurant, attributes: ['name', 'address', 'city', 'state'] }
+  //       ],
+  //       order: [['date', 'DESC']],
+  //       limit: pageSize,
+  //       offset: pageSize * (page)
+  //     });
+
+  //     return reviews;
+  //   } catch (e) {
+  //     console.error(`Unable to get latest general reviews: ${e}`);
+  //     throw e;
+  //   }
+  // }
+  static async getLatestReviewsGeneral(userId, page, pageSize){
     try {
+      // First, get the IDs to exclude: the user's ID and those they are following
+      const friends = await Follow.findAll({
+        where: { followerUid: userId },
+        attributes: ['followingUid']
+      });
+  
+      const friendsIds = friends.map(friend => friend.followingUid);
+      // Include the user's own ID to exclude their reviews as well
+      const excludeIds = [...friendsIds, userId];
+      console.log(excludeIds)
+  
+      // Now, query for reviews excluding the specified user IDs
       const reviews = await Review.findAll({
+        where: {
+          firebaseUid: { [Op.notIn]: excludeIds } // Use Op.notIn to exclude the user and their friends' IDs
+        },
         include: [
           { model: User, attributes: ['username', 'name'] },
           { model: Restaurant, attributes: ['name', 'address', 'city', 'state'] }
         ],
         order: [['date', 'DESC']],
         limit: pageSize,
-        offset: pageSize * (page)
+        offset: pageSize * page
       });
-
+  
       return reviews;
     } catch (e) {
       console.error(`Unable to get latest general reviews: ${e}`);
       throw e;
     }
   }
+  
 }
