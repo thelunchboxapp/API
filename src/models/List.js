@@ -21,6 +21,10 @@ const List = sequelize.define('List', {
   description: {
     type: DataTypes.TEXT,
   },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
   date: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW

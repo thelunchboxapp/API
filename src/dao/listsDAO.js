@@ -35,12 +35,13 @@ static async getList(id) {
           }
     }
   
-  static async addList(userId, description, date) {
+  static async addList(userId, description, date, name) {
     try {
       const listDoc = {
         firebaseUid: userId,
         description: description,
         date: date,
+        name: name
       };
       
       return await List.create(listDoc);

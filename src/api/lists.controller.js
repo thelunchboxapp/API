@@ -36,11 +36,11 @@ export default class ListsController {
   static async apiPostList(req, res, next) {
     try {
       const userId = req.body.firebaseUid;
-      console.log(userId)
+      const name = req.body.name;
       const description = req.body.description;
       const date = new Date();
 
-      const listResponse = await ListsDAO.addList(userId, description, date);
+      const listResponse = await ListsDAO.addList(userId, description, date, name);
       if (listResponse && listResponse.listid) {
         res.json({ status: "success" });
       } else {
